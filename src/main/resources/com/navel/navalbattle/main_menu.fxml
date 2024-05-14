@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane fx:id="scenePane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-background-image: C:\Users\eternalwill\IdeaProjects\naval-battle241\src\main\resources\images\png-transparent-dungeons-dragons-ship-boat-bilge-map-stairs-top-view-transport-tilebased-video-game-roll20.png;" stylesheets="@../../../css/main_menu.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.navel.navalbattle.MainMenuController">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../images/photo_2024-03-19_20-23-29.jpg" />
+         </image></ImageView>
+      <VBox fx:id="vBox" layoutX="100.0" prefHeight="400.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="startGameBtn" alignment="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#onStartGameClick" prefHeight="25.0" prefWidth="200.0" styleClass="start" text="Start game" />
+            <Button fx:id="statBtn" alignment="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#onStatClick" prefHeight="25.0" prefWidth="200.0" styleClass="statistics" text="Statistics" />
+            <Button fx:id="exitBtn" alignment="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#onExitClick" prefHeight="25.0" prefWidth="200.0" styleClass="exit" text="Exit" />
+         </children>
+         <padding>
+            <Insets bottom="50.0" top="50.0" />
+         </padding>
+      </VBox>
+   </children>
+</Pane>

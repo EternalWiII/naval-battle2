@@ -1,0 +1,41 @@
+.auto-place {
+    -fx-border-width: 0;
+    -fx-border-radius: 10;
+    -fx-background-color: #0B63F6;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, #003CC5, 5, 0, 0, 5);
+}
+
+.auto-place:hover {
+    -fx-background-color: #003CC5;
+    -fx-effect: none;
+    -fx-translate-y: 5;
+}
+
+.clear-field {
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-background-color: #0B63F6;
+    -fx-padding: 5;
+    -fx-transition: all 0.2s linear;
+}
+
+.clear-field:hover {
+    -fx-effect: dropshadow(gaussian, white, 4, 0, 0, 0) dropshadow(gaussian, #3C82F8, 4, 0, 0, 0);
+}
+
+.start {
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-background-color: #0B63F6;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+.start:hover {
+    -fx-effect: innershadow(gaussian, white, 4, 0, -2, -2) innershadow(gaussian, #FC63B5, 4, 0, -4, -4);
+    -fx-translate-x: -4;
+    -fx-translate-y: -4;
+}
+

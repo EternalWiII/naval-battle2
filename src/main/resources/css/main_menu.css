@@ -1,0 +1,61 @@
+.start {
+    -fx-border-radius: 0px;
+    -fx-text-fill: white;
+    -fx-transition-duration: 0.2s;
+    -fx-background-color: #0B63F6;
+}
+
+.start:hover {
+    -fx-effect: dropshadow(gaussian, #003CC5, 0, 0, 0, -6);
+}
+
+.statistics {
+    -fx-border-radius: 10px;
+    -fx-text-fill: white;
+    -fx-background-color: #0B63F6;
+    -fx-background-radius: 10px;
+    -fx-transition-duration: 0.2s;
+    -fx-transition-timing-function: linear;
+}
+
+.statistics:hover {
+    -fx-background-color: #003CC5;
+    -fx-background-insets: 0 0 0 0, 0 0 0 40px;
+    -fx-background-radius: 10px;
+    -fx-box-shadow: #003CC5 0 0 0 40px inset;
+}
+
+.exit {
+    -fx-border-radius: 10px;
+    -fx-text-fill: white;
+    -fx-transition-duration: 0.2s;
+    -fx-transition-timing-function: linear;
+    -fx-background-color: #0B63F6;
+}
+
+.exit:hover {
+    -fx-rotate: 5deg;
+}
+
+.main_menu_btn {
+    -fx-background-color: cyan;
+    -fx-button-radius: 0, 0, 30, 30;
+    -fx-alignment: center;
+}
+
+#vBox {
+    -fx-alignment: center;
+    -fx-spacing: 50;
+}
+
+#imageView {
+    -fx-alignment: center;
+}
+
+#Pane {
+
+}
+
+#scenePane {
+    -fx-alignment: center;
+}
