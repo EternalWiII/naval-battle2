@@ -38,6 +38,27 @@ public class Main extends Application implements WindowsManipulations {
             Image icon = new Image(getClass().getResourceAsStream("/images/favicon.png"));
             stage.getIcons().add(icon);
 
+            stage.setMinHeight(400);
+            stage.setMinWidth(400);
+
+//            stage.setMaxHeight(400);
+//            stage.setMaxWidth(400);
+
+            stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+                double height = stage.getHeight();
+                double newHeight = newVal.doubleValue();
+                stage.setHeight(newHeight);
+            });
+
+            stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+                double width = stage.getWidth();
+                double newWidth = newVal.doubleValue();
+                stage.setWidth(newWidth);
+            });
+
+            MainMenuController controller = (MainMenuController)loader.getController();
+            controller.setStage(stage);
+
             stage.setScene(scene);
             stage.show();
 

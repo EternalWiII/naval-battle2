@@ -2,6 +2,7 @@ package com.navel.navalbattle;
 
 import com.navel.navalbattle.database.DatabaseConnector;
 import com.navel.navalbattle.interfaces.WindowsManipulations;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,9 @@ public class MainMenuController extends Controller implements WindowsManipulatio
     @FXML
     private ImageView imageView;
 
+    private ChangeListener<? super Number> widthChangeListener;
+    private ChangeListener<? super Number> heightChangeListener;
+
     @FXML
     private void initialize() {
         vBox.prefWidthProperty().bind(scenePane.widthProperty().subtract(200));
@@ -42,8 +46,7 @@ public class MainMenuController extends Controller implements WindowsManipulatio
 
         vBox.spacingProperty().bind(scenePane.heightProperty().divide(5));
 
-        imageView.fitWidthProperty().bind(scenePane.widthProperty());
-        imageView.fitHeightProperty().bind(scenePane.heightProperty());
+
 
         // imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
@@ -112,5 +115,11 @@ public class MainMenuController extends Controller implements WindowsManipulatio
 
             alert.showAndWait();
         }
+    }
+
+    public void setStage (Stage stage) {
+        this.stage = stage;
+        imageView.fitWidthProperty().bind(stage.widthProperty());
+        imageView.fitHeightProperty().bind(stage.heightProperty());
     }
 }
