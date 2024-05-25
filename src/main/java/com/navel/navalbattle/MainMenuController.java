@@ -46,8 +46,6 @@ public class MainMenuController extends Controller implements WindowsManipulatio
 
         vBox.spacingProperty().bind(scenePane.heightProperty().divide(5));
 
-
-
         // imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
     }
@@ -64,6 +62,10 @@ public class MainMenuController extends Controller implements WindowsManipulatio
         ShipsPositioningController controller = loader.getController();
 
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();;
+        stage.widthProperty().removeListener(widthChangeListener);
+        stage.heightProperty().removeListener(heightChangeListener);
+
+        controller.setResolution(stage);
 
         stage.setScene(scene);
         stage.show();
@@ -121,5 +123,31 @@ public class MainMenuController extends Controller implements WindowsManipulatio
         this.stage = stage;
         imageView.fitWidthProperty().bind(stage.widthProperty());
         imageView.fitHeightProperty().bind(stage.heightProperty());
+
+        ChangeListener<Number> widthListener = ((obs, oldVal, newVal) -> {
+            double height = stage.getHeight();
+            double newHeight = newVal.doubleValue();
+            stage.setHeight(newHeight);
+        });
+
+        ChangeListener<Number> heightListener = ((obs, oldVal, newVal) -> {
+            double width = stage.getWidth();
+            double newWidth = newVal.doubleValue();
+            stage.setWidth(newWidth);
+        });
+
+        this.widthChangeListener = widthListener;
+        this.heightChangeListener = heightListener;
+
+        stage.widthProperty().addListener(widthListener);
+        stage.heightProperty().addListener(heightListener);
+    }
+
+    public void setWidthChangeListener(ChangeListener<Number> widthListener){
+        this.widthChangeListener = widthListener;
+    }
+
+    public void setHeightChangeListener(ChangeListener<Number> heightListener){
+        this.heightChangeListener = heightListener;
     }
 }

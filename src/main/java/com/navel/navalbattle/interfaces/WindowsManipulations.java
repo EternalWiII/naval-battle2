@@ -1,6 +1,7 @@
 package com.navel.navalbattle.interfaces;
 
 import com.navel.navalbattle.Main;
+import com.navel.navalbattle.MainMenuController;
 import com.navel.navalbattle.database.DatabaseConnector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -38,6 +39,10 @@ public interface WindowsManipulations {
             try {
                 Scene scene = new Scene(mainLoader.load());
                 stage.setScene(scene);
+                stage.setHeight(400);
+                stage.setWidth(400);
+                MainMenuController controller = mainLoader.getController();
+                controller.setStage(stage);
 
                 scene.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ESCAPE) {

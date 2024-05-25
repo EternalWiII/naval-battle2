@@ -3,6 +3,7 @@ package com.navel.navalbattle;
 import com.navel.navalbattle.database.DatabaseConnector;
 import com.navel.navalbattle.interfaces.WindowsManipulations;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -44,23 +45,16 @@ public class Main extends Application implements WindowsManipulations {
 //            stage.setMaxHeight(400);
 //            stage.setMaxWidth(400);
 
-            stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-                double height = stage.getHeight();
-                double newHeight = newVal.doubleValue();
-                stage.setHeight(newHeight);
-            });
-
-            stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-                double width = stage.getWidth();
-                double newWidth = newVal.doubleValue();
-                stage.setWidth(newWidth);
-            });
 
             MainMenuController controller = (MainMenuController)loader.getController();
             controller.setStage(stage);
 
+//            controller.setWidthChangeListener(widthListener);
+//            controller.setHeightChangeListener(heightListener);
+
             stage.setScene(scene);
             stage.show();
+
 
             stage.setOnCloseRequest(event -> {
                         event.consume();

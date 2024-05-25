@@ -26,6 +26,7 @@ public class ShipsPositioningController extends Controller implements GridCalcul
     private Stage stage;
     @FXML
     private Pane fieldPane;
+    @FXML BorderPane borderPane;
     private int shipStartX = fieldSize + squareSize;
     private int shipStartY = 0;
     private Ship[] shipArr;
@@ -137,6 +138,7 @@ public class ShipsPositioningController extends Controller implements GridCalcul
             controller.setPlayerShipArr(shipArr);
 
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            controller.setResolution(stage);
 
             stage.setScene(scene);
             stage.show();
@@ -204,5 +206,15 @@ public class ShipsPositioningController extends Controller implements GridCalcul
         onClearFieldClick(e);
 
         autoplaceShips(shipArr, squareSize, fieldSpots);
+    }
+
+    public void setResolution(Stage stage) {
+        this.stage = stage;
+//        stage.setMinWidth(640);
+//        stage.setMinHeight(540 + 30);
+//        stage.minWidthProperty().set(640);
+//        stage.minHeightProperty().set(570);
+        stage.setWidth(640);
+        stage.setHeight(570);
     }
 }
