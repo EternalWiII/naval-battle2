@@ -348,9 +348,4 @@ public class GameController extends Controller implements GridCalculations, Wind
             rec.setTranslateY(position.y() * squareSize);
         });
     }
-
-    public void setResolution(Stage stage) {
-        stage.setMinWidth(880);
-        stage.setMinHeight(540);
-    }
 }
