@@ -20,12 +20,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AuthorizationController extends Controller implements WindowsManipulations {
-    private Connection connection;
     @FXML
     private TextField usernameField;
     @FXML
     private TextField passwordField;
 
+    /**
+     * Виконується при натисканні на кнопку "Увійти".
+     * Перевіряє введені дані та авторизує користувача.
+     *
+     * @param e Подія натискання на кнопку.
+     * @throws SQLException Помилка при роботі з базою даних.
+     * @throws IOException Помилка при читанні fxml файлу.
+     */
     @FXML
     private void onLoginBtnPress(ActionEvent e) throws SQLException, IOException {
         if (!checkInputFields()) {
@@ -63,6 +70,13 @@ public class AuthorizationController extends Controller implements WindowsManipu
         }
     }
 
+    /**
+     * Виконується при натисканні на кнопку "Зареєструватися".
+     * Перевіряє введені дані та реєструє користувача.
+     *
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     private void onRegisterBtnPress() throws SQLException, IOException {
         if (!checkInputFields()) {
@@ -110,6 +124,11 @@ public class AuthorizationController extends Controller implements WindowsManipu
         }
     }
 
+    /**
+     * Перевіряє чи всі поля введені коректно.
+     *
+     * @return true якщо всі поля заповнені, false якщо хоча б одне поле не заповнене.
+     */
     private boolean checkInputFields() {
         if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fill in all fields", ButtonType.OK);

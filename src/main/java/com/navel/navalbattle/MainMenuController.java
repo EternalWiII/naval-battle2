@@ -27,7 +27,6 @@ import java.sql.SQLException;
 
 public class MainMenuController extends Controller implements WindowsManipulations {
     private Stage stage;
-    private Connection connection;
 
     @FXML
     private Pane scenePane;
@@ -36,6 +35,9 @@ public class MainMenuController extends Controller implements WindowsManipulatio
     @FXML
     private ImageView imageView;
 
+    /**
+     * Ініціалізує розміри та розташування елементів на сцені.
+     */
     @FXML
     private void initialize() {
         vBox.prefWidthProperty().bind(scenePane.widthProperty().subtract(200));
@@ -43,7 +45,6 @@ public class MainMenuController extends Controller implements WindowsManipulatio
 
         vBox.spacingProperty().bind(scenePane.heightProperty().divide(5));
 
-        // imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
     }
 
@@ -85,6 +86,12 @@ public class MainMenuController extends Controller implements WindowsManipulatio
         processExit(stage);
     }
 
+    /**
+     * Завантажує наступну сцену зі статистикою гравця та події для неї.
+     *
+     * @param e Подія натискання на кнопку.
+     * @throws IOException Помилка при читанні fxml файлу.
+     */
     @FXML
     protected void onStatClick(ActionEvent e) throws IOException {
         if (DatabaseConnector.getConnection() != null) {

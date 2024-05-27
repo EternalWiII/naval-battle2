@@ -72,8 +72,6 @@ public class GameController extends Controller implements GridCalculations, Wind
         autoplaceShips(enemyShipArr, squareSize, fieldSpots);
         drawShips(enemyShipArr);
 
-        Random rand = new Random();
-//        isPlayersTurn = rand.nextBoolean();
         isPlayersTurn = true;
 
 
@@ -100,7 +98,10 @@ public class GameController extends Controller implements GridCalculations, Wind
         });
     }
 
-    public void startGame() throws InterruptedException {
+    /**
+     * Запускає процес гри.
+     */
+    public void startGame() {
         Thread gameThread = new Thread(() -> {
 
             while (gameIsActive) {
@@ -117,7 +118,7 @@ public class GameController extends Controller implements GridCalculations, Wind
                     }
                 } else {
                     try {
-                        Thread.sleep(500); //!!!!!!!!!!!!!!!!!!!!!! java.util.concurrent.ScheduledExecutorService or java.util.Timer
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -129,6 +130,9 @@ public class GameController extends Controller implements GridCalculations, Wind
         gameThread.start();
     }
 
+    /**
+     * Опрацьовує процес завершення гри.
+     */
     private void endGame() throws IOException {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("main_menu.fxml"));
         Scene scene = new Scene(loader.load());
@@ -139,6 +143,11 @@ public class GameController extends Controller implements GridCalculations, Wind
         stage.show();
     }
 
+    /**
+     * Зберігає статистику гри в базу даних.
+     *
+     * @param isPlayersWin true якщо гравець переміг, false якщо гравець програв.
+     */
     private void saveGameStatistics(boolean isPlayersWin) throws SQLException {
         if (DatabaseConnector.getConnection() != null) {
             String query = "INSERT INTO events (player_id, event_type, player_hits, player_total_shots) VALUES (?, ?, ?, ?)";
@@ -151,6 +160,9 @@ public class GameController extends Controller implements GridCalculations, Wind
         }
     }
 
+    /**
+     * Перевіряє чи гра завершилася.
+     */
     private void checkVictory() {
         if (alivePlayerShips.get() == 0) {
             gameIsActive = false;
@@ -271,6 +283,9 @@ public class GameController extends Controller implements GridCalculations, Wind
         }
     }
 
+    /**
+     * Перемикає хід гравця.
+     */
     private void flipTurn() {
         isPlayersTurn = !isPlayersTurn;
     }

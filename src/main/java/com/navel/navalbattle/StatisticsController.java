@@ -14,6 +14,10 @@ import java.sql.SQLException;
 public class StatisticsController {
     @FXML
     TableView<Statistics> statTable;
+
+    /**
+     * Ініціалізує таблицю статистики користувача.
+     */
     @FXML
     private void initialize() {
 

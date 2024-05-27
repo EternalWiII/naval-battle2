@@ -11,6 +11,10 @@ import java.util.Random;
 public class HardBot implements Bot {
     List<List<Integer>> coordinatesList = new ArrayList<>();
     Random rand = new Random();
+
+    /**
+     * Конструктор класу HardBot.
+     */
     public HardBot() {
         int index = 0;
 
@@ -25,6 +29,12 @@ public class HardBot implements Bot {
             }
         }
     }
+
+    /**
+     * Робить вибір клітини, по якій потрібно нанести удар.
+     * @param isAlreadyHit список списків статусів клітин.
+     * @return об'єкт класу GridPosition, який містить координати клітини.
+     */
     @Override
     public GridPosition makeDicision(List<List<spotStatus>> isAlreadyHit) {
         List<Integer> actionsList;

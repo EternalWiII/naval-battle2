@@ -11,6 +11,9 @@ public class EasyBot implements Bot {
     List<List<Integer>> coordinatesList = new ArrayList<>();
     Random rand = new Random();
 
+    /**
+     * Конструктор класу EasyBot.
+     */
     public EasyBot() {
         int index = 0;
 
@@ -25,6 +28,12 @@ public class EasyBot implements Bot {
             }
         }
     }
+
+    /**
+     * Робить вибір клітини, по якій потрібно нанести удар.
+     * @param isAlreadyHit список списків статусів клітин.
+     * @return об'єкт класу GridPosition, який містить координати клітини.
+     */
     @Override
     public GridPosition makeDicision(List<List<spotStatus>> isAlreadyHit) {
         int index = rand.nextInt(coordinatesList.size());

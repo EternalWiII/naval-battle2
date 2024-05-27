@@ -40,8 +40,6 @@ public class Main extends Application implements WindowsManipulations {
             stage.getIcons().add(icon);
             stage.setResizable(false);
 
-            MainMenuController controller = (MainMenuController)loader.getController();
-
             stage.setScene(scene);
             stage.show();
 
@@ -62,7 +60,6 @@ public class Main extends Application implements WindowsManipulations {
         else {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("authorization.fxml"));
             Scene scene = new Scene(loader.load());
-            AuthorizationController controller = loader.getController();
 
             stage.setTitle("Naval battle");
             stage.setResizable(false);

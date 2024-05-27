@@ -264,6 +264,10 @@ public class Ship {
         ft.play();
     }
 
+    /**
+     * Отримує прозорість прямокутника корабля.
+     * @return значення прозорості.
+     */
     public double getRecOpacity() {
         return rec.getOpacity();
     }
