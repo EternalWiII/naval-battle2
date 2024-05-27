@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.navel.navalbattle.AuthorizationController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.navel.navalbattle.AuthorizationController">
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="385.0" prefWidth="388.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="usernameField" layoutX="132.0" layoutY="86.0" promptText="Username" />
-            <TextField fx:id="passwordField" layoutX="132.0" layoutY="139.0" promptText="Password" />
-            <Button fx:id="registerBtn" layoutX="80.0" layoutY="249.0" mnemonicParsing="false" onAction="#onRegisterBtnPress" text="Register" />
-            <Button fx:id="loginBtn" layoutX="229.0" layoutY="249.0" mnemonicParsing="false" onAction="#onLoginBtnPress" text="Login" />
+            <TextField fx:id="usernameField" layoutX="126.0" layoutY="95.0" promptText="Username" />
+            <TextField fx:id="passwordField" layoutX="126.0" layoutY="148.0" promptText="Password" />
+            <Button fx:id="registerBtn" layoutX="119.0" layoutY="248.0" mnemonicParsing="false" onAction="#onRegisterBtnPress" text="Register" />
+            <Button fx:id="loginBtn" layoutX="235.0" layoutY="248.0" mnemonicParsing="false" onAction="#onLoginBtnPress" text="Login" />
          </children>
       </AnchorPane>
    </center>
