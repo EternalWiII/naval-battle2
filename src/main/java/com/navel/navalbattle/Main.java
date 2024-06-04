@@ -67,6 +67,10 @@ public class Main extends Application implements WindowsManipulations {
             stage.setScene(scene);
             stage.show();
 
+            Image icon = new Image(getClass().getResourceAsStream("/images/favicon.png"));
+            stage.getIcons().add(icon);
+            stage.setResizable(false);
+
             stage.setOnCloseRequest(event -> {
                         event.consume();
                         processExit(stage);
