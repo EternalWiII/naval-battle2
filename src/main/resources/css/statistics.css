@@ -1,0 +1,45 @@
+/* styles.css */
+
+.table-view {
+    -fx-background-color: #f9f9f9; /* Light grey background for the table */
+    -fx-border-color: #dcdcdc; /* Light grey border */
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #007acc; /* Blue background for column headers */
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-width: 0 0 1 0; /* Border between headers and rows */
+    -fx-border-color: #dcdcdc;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #ffffff; /* White background for rows */
+    -fx-border-color: #dcdcdc; /* Light grey border for rows */
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f1f1f1; /* Slightly darker background for odd rows */
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #d0e7ff; /* Light blue background for selected row */
+    -fx-text-fill: #000000; /* Black text for selected row */
+}
+
+.table-view .table-cell {
+    -fx-padding: 8px; /* Padding for table cells */
+    -fx-text-fill: #333333; /* Dark grey text for table cells */
+    -fx-alignment: CENTER_LEFT; /* Align text to the left and center vertically */
+}
+
+.table-view .table-cell:selected {
+    -fx-background-color: #d0e7ff; /* Light blue background for selected cell */
+    -fx-text-fill: #000000; /* Black text for selected cell */
+}
