@@ -1,0 +1,7 @@
+module:com.navel.navalbattle
+com.navel.navalbattle
+com.navel.navalbattle.bot
+com.navel.navalbattle.database
+com.navel.navalbattle.interfaces
+com.navel.navalbattle.records
+com.navel.navalbattle.ships
