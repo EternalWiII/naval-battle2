@@ -47,7 +47,7 @@ public class HardBot implements Bot {
             for (int y = 0; y < 10; y++) {
                 if (isAlreadyHit.get(x).get(y) == spotStatus.HIT) {
 
-                    actionsList = new ArrayList<>() {//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    actionsList = new ArrayList<>() {
                         {
                             add(0);
                             add(1);
@@ -137,7 +137,7 @@ public class HardBot implements Bot {
                         }
                     }
 
-                    actionsList = new ArrayList<>() { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    actionsList = new ArrayList<>() {
                         {
                             add(0);
                             add(1);
