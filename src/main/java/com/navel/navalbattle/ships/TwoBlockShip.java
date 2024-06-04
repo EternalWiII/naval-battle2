@@ -14,11 +14,13 @@ public class TwoBlockShip extends Ship {
      */
     public TwoBlockShip(int shipID, int squareSize, int x, int y, boolean isVisible) {
         super(shipID, squareSize, x, y);
+
         if (isVisible) {
             rec.setOpacity(1);
         } else {
             rec.setOpacity(0);
         }
+
         shipSize = 2;
         hp = shipSize;
         offset = (double)squareSize / 2;

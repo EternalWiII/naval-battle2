@@ -20,7 +20,6 @@ public class StatisticsController {
      */
     @FXML
     private void initialize() {
-
         if (DatabaseConnector.getConnection() != null) {
             try {
                 String query = "SELECT *\n" +
@@ -54,12 +53,15 @@ public class StatisticsController {
                 statTable.getItems().add(new Statistics("Accuracy", accuracy + '%'));
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Помилка при роботі з БД в методі initialize класу StatisticsController.", e);
             }
         }
     }
 
-    public class Statistics {
+    /**
+     * Клас для зберігання пар ключ-значення статистики користувача.
+     */
+    public static class Statistics {
         private String name;
         private String value;
 

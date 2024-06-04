@@ -30,11 +30,9 @@ public class AuthorizationController extends Controller implements WindowsManipu
      * Перевіряє введені дані та авторизує користувача.
      *
      * @param e Подія натискання на кнопку.
-     * @throws SQLException Помилка при роботі з базою даних.
-     * @throws IOException Помилка при читанні fxml файлу.
      */
     @FXML
-    private void onLoginBtnPress(ActionEvent e) throws SQLException, IOException {
+    private void onLoginBtnPress(ActionEvent e) {
         if (!checkInputFields()) {
             return;
         }
@@ -42,53 +40,58 @@ public class AuthorizationController extends Controller implements WindowsManipu
         String query = "SELECT id\n" +
                         "FROM accounts\n" +
                         "WHERE username = ? AND password = ?;";
-        PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(query);
-        statement.setString(1, usernameField.getText());
-        statement.setString(2, passwordField.getText());
-        ResultSet resultSet = statement.executeQuery();
+        PreparedStatement statement = null;
 
-        if (resultSet.next()) {
-            DatabaseConnector.setUserId(resultSet.getInt(1));
+        try {
+            statement = DatabaseConnector.getConnection().prepareStatement(query);
+            statement.setString(1, usernameField.getText());
+            statement.setString(2, passwordField.getText());
+            ResultSet resultSet = statement.executeQuery();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main_menu.fxml"));
-            Scene scene = new Scene(loader.load());
+            if (resultSet.next()) {
+                DatabaseConnector.setUserId(resultSet.getInt(1));
 
-            Stage stage = (Stage) usernameField.getScene().getWindow();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("main_menu.fxml"));
+                Scene scene = new Scene(loader.load());
 
-            stage.setScene(scene);
+                Stage stage = (Stage) usernameField.getScene().getWindow();
 
-            scene.setOnKeyPressed(event -> {
-                event.consume();
+                stage.setScene(scene);
 
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    processExit(stage);
-                }
-            });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "You are not authorized", ButtonType.OK);
-            alert.showAndWait();
+                scene.setOnKeyPressed(event -> {
+                    event.consume();
+
+                    if (event.getCode() == KeyCode.ESCAPE) {
+                        processExit(stage);
+                    }
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You are not authorized", ButtonType.OK);
+                alert.showAndWait();
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Помилка при роботі з базою даних в методі onLoginBtnPress класу AuthorizationController.");
+        } catch (IOException ex) {
+            throw new RuntimeException("Помилка при читанні fxml файлу в методі onLoginBtnPress класу AuthorizationController.");
         }
     }
 
     /**
      * Виконується при натисканні на кнопку "Зареєструватися".
      * Перевіряє введені дані та реєструє користувача.
-     *
-     * @throws SQLException
-     * @throws IOException
      */
     @FXML
-    private void onRegisterBtnPress() throws SQLException, IOException {
+    private void onRegisterBtnPress() {
         if (!checkInputFields()) {
             return;
         }
 
-        String query = "INSERT INTO accounts (username, password) VALUES (?, ?);";
-        PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(query);
-        statement.setString(1, usernameField.getText());
-        statement.setString(2, passwordField.getText());
-
         try {
+            String query = "INSERT INTO accounts (username, password) VALUES (?, ?);";
+            PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(query);
+            statement.setString(1, usernameField.getText());
+            statement.setString(2, passwordField.getText());
+
             statement.executeUpdate();
 
             query = "SELECT id\n" +
@@ -118,9 +121,15 @@ public class AuthorizationController extends Controller implements WindowsManipu
                 }
             });
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Registration failed", ButtonType.OK);
-            alert.setContentText("This account name has already been taken.");
-            alert.showAndWait();
+            if (e.getSQLState().equals("23505")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Registration failed", ButtonType.OK);
+                alert.setContentText("This account name has already been taken.");
+                alert.showAndWait();
+            } else {
+                throw new RuntimeException("Помилка при роботі з базою даних в методі onRegisterBtnPress класу AuthorizationController.");
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Помилка при читанні fxml файлу в методі onRegisterBtnPress класу AuthorizationController.");
         }
     }
 
@@ -130,13 +139,12 @@ public class AuthorizationController extends Controller implements WindowsManipu
      * @return true якщо всі поля заповнені, false якщо хоча б одне поле не заповнене.
      */
     private boolean checkInputFields() {
-        if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+        if (usernameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fill in all fields", ButtonType.OK);
             alert.showAndWait();
 
             return false;
         }
-
         return true;
     }
 }

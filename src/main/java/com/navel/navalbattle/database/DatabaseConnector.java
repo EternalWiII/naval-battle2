@@ -57,6 +57,9 @@ public class DatabaseConnector {
      * @param userId ідентифікатор користувача.
      */
     public static void setUserId(int userId) {
+        if (userId < 0)
+            throw new IllegalArgumentException("userId не може бути від'ємним числом в методі setUserId класу DatabaseConnector.");
+
         DatabaseConnector.userId = userId;
     }
 

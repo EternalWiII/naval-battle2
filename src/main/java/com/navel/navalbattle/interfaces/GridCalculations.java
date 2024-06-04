@@ -15,6 +15,11 @@ public interface GridCalculations {
      * @return об'єкт GridPosition із результатом обрахувань.
      */
     default GridPosition getPosition(Ship s, int squareSize) {
+        if (s == null)
+            throw new IllegalArgumentException("s не може бути null в методі getPosition класу GridCalculations.");
+        if (squareSize <= 0)
+            throw new IllegalArgumentException("squareSize не може бути менше або дорівнювати 0 в методі getPosition класу GridCalculations.");
+
         int gridx;
         int gridy;
 
@@ -76,23 +81,6 @@ public interface GridCalculations {
     }
 
     /**
-     * getPosition конвертує координати в номера рядків і стовпців на панелі.
-     * @param x Координата X.
-     * @param y Координата Y.
-     * @param squareSize Довжина однієї сторони клітини в пікселях.
-     * @return об'єкт GridPosition із результатом обрахувань.
-     */
-    default GridPosition getPosition(double x, double y, int squareSize) {
-        int gridx;
-        int gridy;
-
-        gridx = ((int) x) / squareSize;
-        gridy = ((int) y) / squareSize;
-
-        return new GridPosition(gridx, gridy);
-    }
-
-    /**
      * createShips приєднує прямокутники кораблів до потрібної панелі та розташовує їх один під одним на певних координатах.
      * @param shipArr Масив кораблей для яких виконується маніпуляції.
      * @param fieldPane Панель, до якої потрібно приєднати прямокутники кораблі.
@@ -101,6 +89,14 @@ public interface GridCalculations {
      * @param shipStartY Координата Y від заданої fieldPane, на якій відбувається розташування.
      */
     default void createShips (Ship[] shipArr, Pane fieldPane, int squareSize, int shipStartX, int shipStartY, boolean makeVisible) {
+        if (shipArr == null)
+            throw new IllegalArgumentException("shipArr не може бути null в методі createShips класу GridCalculations.");
+        if (fieldPane == null)
+            throw new IllegalArgumentException("fieldPane не може бути null в методі createShips класу GridCalculations.");
+        if (squareSize <= 0)
+            throw new IllegalArgumentException("squareSize не може бути менше або дорівнювати 0 в методі createShips класу GridCalculations.");
+
+
         for (int i = 0; i < 10; i++) {
             shipArr[i] =
                     switch (i) {
@@ -126,7 +122,14 @@ public interface GridCalculations {
      * @return true, якщо поставити корабель в задану позицію можна, false, якщо ні.
      */
     default boolean canPlace(Ship s, Ship[] shipArr, GridPosition position) {
-        for (int sn = 0; sn < 10; sn++) {
+        if (s == null)
+            throw new IllegalArgumentException("s не може бути null в методі canPlace класу GridCalculations.");
+        if (shipArr == null)
+            throw new IllegalArgumentException("shipArr не може бути null в методі canPlace класу GridCalculations.");
+        if (position == null)
+            throw new IllegalArgumentException("position не може бути null в методі canPlace класу GridCalculations.");
+
+        for (int sn = 0; sn < shipArr.length; sn++) {
             if (s.getShipID() != sn ) {
                 ShipUsedArea usedArea = shipArr[sn].getUsedArea();
 
@@ -157,42 +160,47 @@ public interface GridCalculations {
      * @param fieldSpots Кількість рядків та стовспців на панелі.
      */
     default void autoplaceShips(Ship[] shipArr, int squareSize, int fieldSpots) {
+        if (shipArr == null)
+            throw new IllegalArgumentException("shipArr не може бути null в методі autoplaceShips класу GridCalculations.");
+        if (squareSize <= 0)
+            throw new IllegalArgumentException("squareSize не може бути менше або дорівнювати 0 в методі autoplaceShips класу GridCalculations.");
+        if (fieldSpots <= 0)
+            throw new IllegalArgumentException("fieldSpots не може бути менше або дорівнювати 0 в методі autoplaceShips класу GridCalculations.");
+
         int gridx, gridy;
         boolean shipNotPlaced, randVertical;
         Random rand = new Random();
 
-        for (int i = 0; i < 10; i++) {
+        for (Ship ship : shipArr) {
             shipNotPlaced = true;
             while (shipNotPlaced) {
                 gridx = rand.nextInt(fieldSpots - 1);
                 gridy = rand.nextInt(fieldSpots - 1);
                 randVertical = rand.nextBoolean();
 
-                if (shipArr[i].isVertical() != randVertical) {
-                    shipArr[i].flipIsVertical();
+                if (ship.isVertical() != randVertical) {
+                    ship.flipIsVertical();
                 }
 
-                if (shipArr[i].isVertical()) {
-                    shipArr[i].setX(gridx * squareSize - shipArr[i].getOffset());
-                    shipArr[i].setY(gridy * squareSize + shipArr[i].getOffset());
-                }
-                else {
-                    shipArr[i].setX(gridx * squareSize);
-                    shipArr[i].setY(gridy * squareSize);
+                if (ship.isVertical()) {
+                    ship.setX(gridx * squareSize - ship.getOffset());
+                    ship.setY(gridy * squareSize + ship.getOffset());
+                } else {
+                    ship.setX(gridx * squareSize);
+                    ship.setY(gridy * squareSize);
                 }
 
-                if(canPlace(shipArr[i], shipArr, getPosition(shipArr[i], squareSize))) {
-                    GridPosition shipPos = getPosition(shipArr[i], squareSize);
-                    if (shipArr[i].isVertical()) {
-                        shipArr[i].setX(shipPos.x() * squareSize - shipArr[i].getOffset());
-                        shipArr[i].setY(shipPos.y() * squareSize + shipArr[i].getOffset());
-                    }
-                    else {
-                        shipArr[i].setX(shipPos.x() * squareSize);
-                        shipArr[i].setY(shipPos.y() * squareSize);
+                if (canPlace(ship, shipArr, getPosition(ship, squareSize))) {
+                    GridPosition shipPos = getPosition(ship, squareSize);
+                    if (ship.isVertical()) {
+                        ship.setX(shipPos.x() * squareSize - ship.getOffset());
+                        ship.setY(shipPos.y() * squareSize + ship.getOffset());
+                    } else {
+                        ship.setX(shipPos.x() * squareSize);
+                        ship.setY(shipPos.y() * squareSize);
                     }
 
-                    shipArr[i].draw();
+                    ship.draw();
                     shipNotPlaced = false;
                 }
             }
@@ -204,8 +212,11 @@ public interface GridCalculations {
      * @param shipArr Масив кораблей, для яких буде викликан метод draw().
      */
     default void drawShips(Ship[] shipArr) {
-        for (int i = 0; i < 10; i++) {
-            shipArr[i].draw();
+        if (shipArr == null)
+            throw new IllegalArgumentException("shipArr не може бути null в методі drawShips класу GridCalculations.");
+
+        for (Ship ship : shipArr) {
+            ship.draw();
         }
     }
 }

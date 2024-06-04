@@ -15,11 +15,13 @@ public class OneBlockShip extends Ship {
      */
     public OneBlockShip(int shipID, int squareSize, int x, int y, boolean isVisible) {
         super(shipID, squareSize, x, y);
+
         if (isVisible) {
             rec.setOpacity(1);
         } else {
             rec.setOpacity(0);
         }
+
         shipSize = 1;
         hp = shipSize;
         offset = 0;

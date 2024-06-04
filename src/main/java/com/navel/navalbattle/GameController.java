@@ -30,7 +30,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameController extends Controller implements GridCalculations, WindowsManipulations {
@@ -74,7 +73,6 @@ public class GameController extends Controller implements GridCalculations, Wind
 
         isPlayersTurn = true;
 
-
         enemyFieldPane.setOnMousePressed((MouseEvent event) -> {
             if (isPlayersTurn) {
                 double mouseX = event.getX();
@@ -113,7 +111,7 @@ public class GameController extends Controller implements GridCalculations, Wind
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            System.out.println("Помилка в циклі потоку gameThread.");
                         }
                     }
                 } else {
@@ -122,7 +120,7 @@ public class GameController extends Controller implements GridCalculations, Wind
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    checkHit(hBot.makeDicision(playerIsAlreadyHit));
+                    checkHit(hBot.makeDecision(playerIsAlreadyHit));
                 }
             }
         });
@@ -133,14 +131,19 @@ public class GameController extends Controller implements GridCalculations, Wind
     /**
      * Опрацьовує процес завершення гри.
      */
-    private void endGame() throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("main_menu.fxml"));
-        Scene scene = new Scene(loader.load());
+    private void endGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("main_menu.fxml"));
+            Scene scene = new Scene(loader.load());
 
-        Stage stage = (Stage) playerFieldPane.getScene().getWindow();
+            Stage stage = (Stage) playerFieldPane.getScene().getWindow();
 
-        stage.setScene(scene);
-        stage.show();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Помилка при читанні файлу main_menu.fxml в методі endGame класу GameController.", e);
+        }
     }
 
     /**
@@ -148,15 +151,19 @@ public class GameController extends Controller implements GridCalculations, Wind
      *
      * @param isPlayersWin true якщо гравець переміг, false якщо гравець програв.
      */
-    private void saveGameStatistics(boolean isPlayersWin) throws SQLException {
-        if (DatabaseConnector.getConnection() != null) {
-            String query = "INSERT INTO events (player_id, event_type, player_hits, player_total_shots) VALUES (?, ?, ?, ?)";
-            PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(query);
-            statement.setInt(1, DatabaseConnector.getUserId());
-            statement.setObject(2, isPlayersWin ? "victory" : "loss", java.sql.Types.OTHER);
-            statement.setInt(3, playerHits);
-            statement.setInt(4, playerTotalShots);
-            statement.executeUpdate();
+    private void saveGameStatistics(boolean isPlayersWin) {
+        try {
+            if (DatabaseConnector.getConnection() != null) {
+                String query = "INSERT INTO events (player_id, event_type, player_hits, player_total_shots) VALUES (?, ?, ?, ?)";
+                PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(query);
+                statement.setInt(1, DatabaseConnector.getUserId());
+                statement.setObject(2, isPlayersWin ? "victory" : "loss", java.sql.Types.OTHER);
+                statement.setInt(3, playerHits);
+                statement.setInt(4, playerTotalShots);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Помилка при збереженні статистики гри в БД в методі saveGameStatistics класу GameController.", e);
         }
     }
 
@@ -172,13 +179,10 @@ public class GameController extends Controller implements GridCalculations, Wind
                 alert.setTitle("Game Over");
                 alert.setHeaderText("You lost!");
                 alert.setContentText("All your ships have been destroyed.");
+
                 if (alert.showAndWait().get() == ButtonType.OK) {
-                    try {
-                        saveGameStatistics(false);
-                        endGame();
-                    } catch (IOException | SQLException e) {
-                        e.printStackTrace();
-                    }
+                    saveGameStatistics(false);
+                    endGame();
                 }
             });
 
@@ -190,15 +194,10 @@ public class GameController extends Controller implements GridCalculations, Wind
                 alert.setTitle("Game Over");
                 alert.setHeaderText("You won!");
                 alert.setContentText("All enemy ships have been destroyed.");
+
                 if (alert.showAndWait().get() == ButtonType.OK) {
-                    try {
-                        saveGameStatistics(true);
-                        endGame();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    saveGameStatistics(true);
+                    endGame();
                 }
             });
         }
@@ -209,6 +208,9 @@ public class GameController extends Controller implements GridCalculations, Wind
      * @param shipArr Масив кораблів, який буде скопійовано.
      */
     public void setPlayerShipArr(Ship[] shipArr) {
+        if (shipArr == null)
+            throw new IllegalArgumentException("shipArr не може бути null в методі setPlayerShipArr класу GameController.");
+
         this.playerShipArr = shipArr;
 
         for (Ship ship : shipArr) {
@@ -226,6 +228,9 @@ public class GameController extends Controller implements GridCalculations, Wind
      * @param coord Координати клітини.
      */
     public void checkHit(GridPosition coord) {
+        if (coord == null)
+            throw new IllegalArgumentException("coord не може бути null в методі checkHit класу GameController.");
+
         Ship[] shipArr;
         List<List<spotStatus>> isAlreadyHit;
         AtomicInteger aliveShips;
@@ -245,10 +250,7 @@ public class GameController extends Controller implements GridCalculations, Wind
             fieldPane = playerFieldPane;
         }
 
-        if (isAlreadyHit.get(coord.x()).get(coord.y()) == spotStatus.EMPTY || isAlreadyHit.get(coord.x()).get(coord.y()) == spotStatus.HIT) {
-            return;
-        }
-        else {
+        if (!(isAlreadyHit.get(coord.x()).get(coord.y()) == spotStatus.EMPTY || isAlreadyHit.get(coord.x()).get(coord.y()) == spotStatus.HIT)) {
             playerTurnActive = false;
 
             for (int i = 0; i < 10 ; i++) {
@@ -295,6 +297,12 @@ public class GameController extends Controller implements GridCalculations, Wind
      * @param ship Знищений корабель.
      */
     private void markAreaAroundDeadShip(Ship ship, Pane fieldPane, List<List<spotStatus>> isAlreadyHit) {
+        if (ship == null)
+            throw new IllegalArgumentException("ship не може бути null в методі markAreaAroundDeadShip класу GameController.");
+        if (fieldPane == null)
+            throw new IllegalArgumentException("fieldPane не може бути null в методі markAreaAroundDeadShip класу GameController.");
+        if (isAlreadyHit == null)
+            throw new IllegalArgumentException("isAlreadyHit не може бути null в методі markAreaAroundDeadShip класу GameController.");
 
         ShipUsedArea deadArea = ship.getUsedArea();
 
@@ -302,7 +310,7 @@ public class GameController extends Controller implements GridCalculations, Wind
             for (int g = deadArea.yMin(); g <= deadArea.yMax(); g++) {
 
                 if (j >= 0 && j <= 9 && g >= 0 && g <= 9) {
-                    if (isAlreadyHit.get(j).get(g) == spotStatus.UNKNOWN) {
+                    if (isAlreadyHit.get(j).get(g) == spotStatus.UNKNOWN || isAlreadyHit.get(j).get(g) == spotStatus.EMPTY) {
                         markMiss(new GridPosition(j, g), fieldPane, isAlreadyHit);
                     }
                 }
@@ -315,6 +323,13 @@ public class GameController extends Controller implements GridCalculations, Wind
      * @param position Координати клітини.
      */
     private void markMiss(GridPosition position, Pane fieldPane, List<List<spotStatus>> isAlreadyHit) {
+        if (position == null)
+            throw new IllegalArgumentException("position не може бути null в методі markMiss класу GameController.");
+        if (fieldPane == null)
+            throw new IllegalArgumentException("fieldPane не може бути null в методі markMiss класу GameController.");
+        if (isAlreadyHit == null)
+            throw new IllegalArgumentException("isAlreadyHit не може бути null в методі markMiss класу GameController.");
+
         isAlreadyHit.get(position.x()).set(position.y(), spotStatus.EMPTY);
 
         Platform.runLater(() -> {
@@ -322,18 +337,8 @@ public class GameController extends Controller implements GridCalculations, Wind
             rec.setHeight(squareSize);
             rec.setWidth(squareSize);
             Image image = new Image(getClass().getResourceAsStream("/images/miss.png"));
-            rec.setFill(new ImagePattern(image));
-            rec.setOpacity(0);
 
-            FadeTransition ft = new FadeTransition(Duration.millis(500), rec);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.play();
-
-            fieldPane.getChildren().add(rec);
-
-            rec.setTranslateX(position.x() * squareSize);
-            rec.setTranslateY(position.y() * squareSize);
+            drawShotResult(position, fieldPane, rec, image);
         });
     }
 
@@ -342,6 +347,13 @@ public class GameController extends Controller implements GridCalculations, Wind
      * @param position Координати клітини.
      */
     private void markHit(GridPosition position, Pane fieldPane, List<List<spotStatus>> isAlreadyHit) {
+        if (position == null)
+            throw new IllegalArgumentException("position не може бути null в методі markHit класу GameController.");
+        if (fieldPane == null)
+            throw new IllegalArgumentException("fieldPane не може бути null в методі markHit класу GameController.");
+        if (isAlreadyHit == null)
+            throw new IllegalArgumentException("isAlreadyHit не може бути null в методі markHit класу GameController.");
+
         isAlreadyHit.get(position.x()).set(position.y(), spotStatus.HIT);
 
         Platform.runLater(() -> {
@@ -349,18 +361,35 @@ public class GameController extends Controller implements GridCalculations, Wind
             rec.setHeight(squareSize);
             rec.setWidth(squareSize);
             Image image = new Image(getClass().getResourceAsStream("/images/hit.png"));
-            rec.setFill(new ImagePattern(image));
-            rec.setOpacity(0);
 
-            FadeTransition ft = new FadeTransition(Duration.millis(500), rec);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.play();
-
-            fieldPane.getChildren().add(rec);
-
-            rec.setTranslateX(position.x() * squareSize);
-            rec.setTranslateY(position.y() * squareSize);
+            drawShotResult(position, fieldPane, rec, image);
         });
+    }
+
+    /**
+     * Відмальовує результат пострілу.
+     * @param position Координати клітини.
+     * @param fieldPane Поле, на якому відбувся постріл.
+     * @param rec Прямокутник, який буде відмальовано.
+     * @param image Зображення, яке буде відмальовано.
+     */
+    private void drawShotResult(GridPosition position, Pane fieldPane, Rectangle rec, Image image) {
+        if (rec == null)
+            throw new IllegalArgumentException("rec не може бути null в методі drawShotResult класу GameController.");
+        if (image == null)
+            throw new IllegalArgumentException("image не може бути null в методі drawShotResult класу GameController.");
+
+        rec.setFill(new ImagePattern(image));
+        rec.setOpacity(0);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(500), rec);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+
+        fieldPane.getChildren().add(rec);
+
+        rec.setTranslateX(position.x() * squareSize);
+        rec.setTranslateY(position.y() * squareSize);
     }
 }

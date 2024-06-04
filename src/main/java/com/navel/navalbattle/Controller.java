@@ -21,17 +21,15 @@ public class Controller {
         try (FileInputStream fis = new FileInputStream("src/main/resources/data/game_data.properties")) {
             properties.load(fis);
         } catch (IOException e) {
-            System.out.println("An error occurred while reading game_data.properties file.");
-            e.printStackTrace();
+            System.out.println("Помилка при читанні game_data.properties в конструкторі класу Controller.");
         }
 
         try {
             fieldSize = Integer.parseInt(properties.getProperty("fieldSize"));
             fieldSpots = Integer.parseInt(properties.getProperty("fieldSpots"));
         } catch (NumberFormatException e) {
-            System.out.println("game_data.properties file values are corrupted, overwriting it with default values.");
+            System.out.println("Значення в файлі game_data.properties не є коректними. Виконується їх перезапис значеннями за замовчуванням.");
             createDefaultGameData(gameData);
-            e.printStackTrace();
         }
 
         squareSize = fieldSize / fieldSpots;
@@ -42,6 +40,9 @@ public class Controller {
      * @param file Шлях за яким буде створено новий файл.
      */
     private void createDefaultGameData(File file) {
+        if (file == null)
+            throw new IllegalArgumentException("file не може бути null в методі createDefaultGameData класу Controller.");
+
         Properties properties = new Properties();
         properties.setProperty("fieldSize", "400");
         properties.setProperty("fieldSpots", "10");
@@ -49,8 +50,7 @@ public class Controller {
         try (OutputStream outputStream = new FileOutputStream(file)) {
             properties.store(outputStream, null);
         } catch (IOException e) {
-            System.out.println("An error occurred while creating default game_data.properties file.");
-            e.printStackTrace();
+            throw new RuntimeException("Помилка при запису в файл в методі createDefaultGameData класу Controller.");
         }
     }
 }

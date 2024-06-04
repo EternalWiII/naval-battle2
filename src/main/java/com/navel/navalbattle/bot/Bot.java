@@ -9,5 +9,5 @@ interface Bot {
     /**
      * Робить вибір клітини, по якій потрібно нанести удар.
      */
-    GridPosition makeDicision(List<List<spotStatus>> isAlreadyHit);
+    GridPosition makeDecision(List<List<spotStatus>> isAlreadyHit);
 }

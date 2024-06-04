@@ -5,20 +5,16 @@ import com.navel.navalbattle.interfaces.WindowsManipulations;
 import com.navel.navalbattle.ships.*;
 import com.navel.navalbattle.records.GridPosition;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
 
@@ -27,8 +23,8 @@ public class ShipsPositioningController extends Controller implements GridCalcul
     @FXML
     private Pane fieldPane;
     @FXML BorderPane borderPane;
-    private int shipStartX = fieldSize + squareSize;
-    private int shipStartY = 0;
+    private final int shipStartX = fieldSize + squareSize;
+    private final int shipStartY = 0;
     private Ship[] shipArr;
     private boolean isDragged = false;
     private Ship draggedShip;
@@ -49,6 +45,9 @@ public class ShipsPositioningController extends Controller implements GridCalcul
      * @param shipArr Масив із кораблями користувача.
      */
     private void addPositioningEvents(Ship[] shipArr) {
+        if (shipArr == null)
+            throw new IllegalArgumentException("Ship не може бути null.");
+
         for (Ship ship : shipArr) {
             ship.getRec().setOnMousePressed(event -> recPressed(event, ship));
             ship.getRec().setOnMouseDragged(event -> recDragged(event, ship));
@@ -62,6 +61,9 @@ public class ShipsPositioningController extends Controller implements GridCalcul
      * @param s Корабель, із якми відбуваєтсья подія.
      */
     private void recPressed(MouseEvent event, Ship s) {
+        if (s == null)
+            throw new IllegalArgumentException("Ship не може бути null.");
+
         s.setHomeX(s.getX());
         s.setHomeY(s.getY());
         s.setHomeIsVertical(s.isVertical());
@@ -74,6 +76,9 @@ public class ShipsPositioningController extends Controller implements GridCalcul
      * @param s Корабель, із якми відбуваєтсья подія.
      */
     private void recDragged(MouseEvent event, Ship s) {
+        if (s == null)
+            throw new IllegalArgumentException("Ship не може бути null.");
+
         isDragged = true;
 
         s.getRec().toFront();
@@ -90,6 +95,9 @@ public class ShipsPositioningController extends Controller implements GridCalcul
      * @param s Корабель, із якми відбуваєтсья подія.
      */
     private void recReleased(MouseEvent event, Ship s) {
+        if (s == null)
+            throw new IllegalArgumentException("Ship не може бути null.");
+
         isDragged = false;
 
         GridPosition position = getPosition(s, squareSize);
@@ -127,30 +135,33 @@ public class ShipsPositioningController extends Controller implements GridCalcul
     /**
      * Завантажує наступну сцену гри та події для неї.
      * @param e Подія натискання на кнопку.
-     * @throws IOException Помилка при читанні fxml файлу.
      */
     @FXML
-    protected void onStartClick(ActionEvent e) throws IOException, InterruptedException {
+    protected void onStartClick(ActionEvent e) {
         if (checkShipsPlaced()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("game.fxml"));
-            Scene scene = new Scene(loader.load());
-            GameController controller = loader.getController();
-            controller.setPlayerShipArr(shipArr);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("game.fxml"));
+                Scene scene = new Scene(loader.load());
+                GameController controller = loader.getController();
+                controller.setPlayerShipArr(shipArr);
 
-            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
 
-            stage.setScene(scene);
-            stage.show();
+                stage.setScene(scene);
+                stage.show();
 
-            scene.setOnKeyPressed(event -> {
-                event.consume();
+                scene.setOnKeyPressed(event -> {
+                    event.consume();
 
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    processReturnToMain(stage);
-                }
-            });
+                    if (event.getCode() == KeyCode.ESCAPE) {
+                        processReturnToMainMenu(stage);
+                    }
+                });
 
-            controller.startGame();
+                controller.startGame();
+            } catch (IOException ex) {
+                throw new RuntimeException("Помилка при читанні файлу game.fxml в методі onStartClick класу ShipsPositioningController.", ex);
+            }
         }
         else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -185,12 +196,15 @@ public class ShipsPositioningController extends Controller implements GridCalcul
     @FXML
     protected void onClearFieldClick(ActionEvent e) {
         int newY = 0;
+
         for (int i = 0; i < 10; i++) {
             shipArr[i].setX(fieldSize + squareSize);
             shipArr[i].setY(newY);
+
             if (shipArr[i].isVertical()) {
                 shipArr[i].flipIsVertical();
             }
+
             newY += squareSize;
             shipArr[i].draw();
         }

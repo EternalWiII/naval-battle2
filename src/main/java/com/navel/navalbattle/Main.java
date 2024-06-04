@@ -24,40 +24,16 @@ public class Main extends Application implements WindowsManipulations {
     /**
      * Отримує поточний stage та завантажує сцену головного меню.
      * @param stage Поточний stage.
-     * @throws IOException Помилка при читанні fxml файлу.
      */
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         if(!DatabaseConnector.makeConnection()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Can't connect to database", ButtonType.OK);
             alert.setContentText("You will continue without saving your statistics. If you want to save it, please, restart the game.");
             alert.showAndWait();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main_menu.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            Image icon = new Image(getClass().getResourceAsStream("/images/favicon.png"));
-            stage.getIcons().add(icon);
-            stage.setResizable(false);
-
-            stage.setScene(scene);
-            stage.show();
-
-            stage.setOnCloseRequest(event -> {
-                        event.consume();
-                        processExit(stage);
-                    }
-            );
-
-            scene.setOnKeyPressed(event -> {
-                event.consume();
-
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    processExit(stage);
-                }
-            });
         }
-        else {
+
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("authorization.fxml"));
             Scene scene = new Scene(loader.load());
 
@@ -80,6 +56,8 @@ public class Main extends Application implements WindowsManipulations {
                     processExit(stage);
                 }
             });
+        } catch (IOException e) {
+            throw new RuntimeException("Помилка при читанні файлу authorization.fxml в методі start класу Main.", e);
         }
     }
 

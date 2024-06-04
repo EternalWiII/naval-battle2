@@ -10,7 +10,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Ship {
-    private static int numberOfShips = 0;
     protected int shipID;
     protected int shipSize;
     protected int squareSize;
@@ -33,21 +32,18 @@ public class Ship {
      * @param y Координата Y корабля.
      */
     public Ship(int shipID, int squareSize, int x, int y) {
+        if (shipID < 0 || shipID > 9) {
+            throw new IllegalArgumentException("ID повинно бути в межах від 0 до 9 в конструкторі класу Ship.");
+        }
+        if (squareSize < 0) {
+            throw new IllegalArgumentException("Розмір клітини повинен бути більше 0 в конструкторі класу Ship.");
+        }
+
         this.squareSize = squareSize;
         rec = new Rectangle();
         this.x = x;
         this.y = y;
         this.shipID = shipID;
-
-        numberOfShips++;
-    }
-
-    /**
-     * Повертає статичне поле numberOfShips.
-     * @return Статичне поле numberOfShips.
-     */
-    public static int getNumberOfShips() {
-        return numberOfShips;
     }
 
     /**
@@ -171,11 +167,11 @@ public class Ship {
     }
 
     /**
-     * Сетер для поля squareSize.
-     * @param squareSize Нове значення squareSize.
+     * Отримує прозорість прямокутника корабля.
+     * @return значення прозорості.
      */
-    public void setSquareSize(int squareSize) {
-        this.squareSize = squareSize;
+    public double getRecOpacity() {
+        return rec.getOpacity();
     }
 
     /**
@@ -208,6 +204,7 @@ public class Ship {
      */
     public ShipUsedArea getUsedArea() {
         int[] area = new int[4];
+
         if (isVertical) {
             if (((int)(x) + (int)offset ) / squareSize >= 10) {
                 System.out.println(((int)(x) + (int)offset / squareSize));
@@ -262,13 +259,5 @@ public class Ship {
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
         ft.play();
-    }
-
-    /**
-     * Отримує прозорість прямокутника корабля.
-     * @return значення прозорості.
-     */
-    public double getRecOpacity() {
-        return rec.getOpacity();
     }
 }

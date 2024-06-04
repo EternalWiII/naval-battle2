@@ -35,7 +35,10 @@ public class EasyBot implements Bot {
      * @return об'єкт класу GridPosition, який містить координати клітини.
      */
     @Override
-    public GridPosition makeDicision(List<List<spotStatus>> isAlreadyHit) {
+    public GridPosition makeDecision(List<List<spotStatus>> isAlreadyHit) {
+        if (isAlreadyHit == null)
+            throw new IllegalArgumentException("isAlreadyHit не може бути null в методі makeDecision класу EasyBot.");
+
         int index = rand.nextInt(coordinatesList.size());
 
         int x = coordinatesList.get(index).get(0);

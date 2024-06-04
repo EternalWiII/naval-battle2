@@ -1,7 +1,6 @@
 package com.navel.navalbattle.interfaces;
 
 import com.navel.navalbattle.Main;
-import com.navel.navalbattle.MainMenuController;
 import com.navel.navalbattle.database.DatabaseConnector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +17,9 @@ public interface WindowsManipulations {
      * @param stage Поточна сцена яка буде закрита.
      */
     default void processExit (Stage stage) {
+        if (stage == null)
+            throw new IllegalArgumentException("stage не може бути null в методі processExit");
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Exit from application");
 
@@ -31,15 +33,19 @@ public interface WindowsManipulations {
      * processReturnToMain створює повідомлення. Якщо користувач обирає OK, він повертається до головного меню.
      * @param stage Поточна сцена, для якої відбудеться зміна.
      */
-    default void processReturnToMain (Stage stage) {
+    default void processReturnToMainMenu(Stage stage) {
+        if (stage == null)
+            throw new IllegalArgumentException("stage не може бути null в методі processReturnToMain");
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Return to main menu");
+
         if (alert.showAndWait().get() == ButtonType.OK) {
             FXMLLoader mainLoader = new FXMLLoader(Main.class.getResource("main_menu.fxml"));
+
             try {
                 Scene scene = new Scene(mainLoader.load());
                 stage.setScene(scene);
-                MainMenuController controller = mainLoader.getController();
 
                 scene.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ESCAPE) {
@@ -47,7 +53,7 @@ public interface WindowsManipulations {
                     }
                 });
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException("Помилка при відкритті файлу main_menu.fxml.", ex);
             }
         }
     }
