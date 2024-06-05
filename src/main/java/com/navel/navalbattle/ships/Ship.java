@@ -207,7 +207,6 @@ public class Ship {
 
         if (isVertical) {
             if (((int)(x) + (int)offset ) / squareSize >= 10) {
-                System.out.println(((int)(x) + (int)offset / squareSize));
                 area[0] = ((int)(x) + (int)offset) / squareSize;
                 area[1] = area[0];
 

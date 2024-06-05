@@ -27,14 +27,17 @@ public class Main extends Application implements WindowsManipulations {
      */
     @Override
     public void start(Stage stage) {
+        String sceneName = "authorization.fxml";
+
         if(!DatabaseConnector.makeConnection()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Can't connect to database", ButtonType.OK);
             alert.setContentText("You will continue without saving your statistics. If you want to save it, please, restart the game.");
             alert.showAndWait();
+            sceneName = "main_menu.fxml";
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("authorization.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneName));
             Scene scene = new Scene(loader.load());
 
             stage.setTitle("Naval battle");
@@ -61,7 +64,7 @@ public class Main extends Application implements WindowsManipulations {
                 }
             });
         } catch (IOException e) {
-            throw new RuntimeException("Помилка при читанні файлу authorization.fxml в методі start класу Main.", e);
+            throw new RuntimeException("Помилка при читанні файлу " + sceneName + " в методі start класу Main.", e);
         }
     }
 

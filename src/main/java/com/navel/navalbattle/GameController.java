@@ -67,7 +67,7 @@ public class GameController extends Controller implements GridCalculations, Wind
         }
 
         enemyShipArr = new Ship[10];
-        createShips(enemyShipArr, enemyFieldPane, squareSize, 600, 0, true);
+        createShips(enemyShipArr, enemyFieldPane, squareSize, 600, 0, false);
         autoplaceShips(enemyShipArr, squareSize, fieldSpots);
         drawShips(enemyShipArr);
 
